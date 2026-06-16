@@ -2,11 +2,29 @@ const fs = require('fs');
 const database = JSON.parse(fs.readFileSync('./db.json', 'utf8'));
 
 const express = require('express');
+const cors = require('cors');
 
 const app = express();
 
+app.use(cors({
+    origin: [
+        'http://127.0.0.1:5500',
+        'http://localhost:5500'
+    ]
+}));
 
-const question = [ 'team', 'conference', 'position', 'country' , 'number', 'height_cm', 'weight_kg', 'age'];
+app.use(express.json());
+
+const question = [
+    'team',
+    'conference',
+    'position',
+    'country',
+    'number',
+    'height_cm',
+    'weight_kg',
+    'age'
+];
 
 app.get("/api", (req, res) => {
   return res.status(200).json({ database });
@@ -47,20 +65,28 @@ function shuffle(array) {
 
 
 app.post('/api/player/check', (req, res) => {
-    const correct = false;
-    const player = database.find(player => player.id == req.params.playerId);
-    const expected = player[req.params.question];
-    if (expected == req.params.answer){
+    let correct = false;
+
+    const player = database.find(
+        player => player.id == req.body.playerId
+    );
+
+    const expected = player[req.body.question];
+
+    if (expected == req.body.answer) {
         correct = true;
     }
+
     res.status(200).json({
-        status : "OK",
-        "correct": correct,
-        "expected" : expected
-    })
-})
+        status: "OK",
+        correct: correct,
+        expected: expected
+    });
+});
+
+
 
 
 app.listen(3000, () => {
-    console.log("serveur démarré sur localhost:3000");
+    console.log('Serveur démarré sur http://127.0.0.1:3000');
 });
