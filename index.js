@@ -26,9 +26,6 @@ const question = [
     'age'
 ];
 
-app.get("/api", (req, res) => {
-  return res.status(200).json({ database });
-});
 
 app.get('/api/player/random', (req, res) => {
     const RandomID = getRandomInt(50)+1;
